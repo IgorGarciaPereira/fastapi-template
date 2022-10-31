@@ -16,3 +16,5 @@ watchfiles==0.18.0
 websockets==10.4
 
 SQLAlchemy~=1.4.42
+psycopg2-binary~=2.9.5
+python-dotenv==0.21.0

@@ -1,5 +1,7 @@
 import uuid
+import os
 
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -7,15 +9,20 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import TypeDecorator, CHAR
 
 
-SQLALCHEMY_DATABASE_URL = 'sqlite:///./sql_app.db'
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+file = os.path.abspath(__file__)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(file)))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+def get_db_uri():
+    _driver = os.getenv('DB_DRIVER')
+    _host = os.getenv('DB_HOST')
+    _port = os.getenv('DB_PORT')
+    _db_user = os.getenv('POSTGRES_USER')
+    _db_pass = os.getenv('POSTGRES_PASSWORD')
+    _db_name = os.getenv('DB_NAME')
+    uri = f'{_driver}://{_db_user}:{_db_pass}@{_host}:{_port}/{_db_name}'
+    return uri
 
 
 def get_db():
@@ -71,3 +78,14 @@ class GUID(TypeDecorator):
             if not isinstance(value, uuid.UUID):
                 value = uuid.UUID(value)
             return value
+
+
+# SQLALCHEMY_DATABASE_URL = 'sqlite:///./sql_app.db'
+SQLALCHEMY_DATABASE_URL = get_db_uri()
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()

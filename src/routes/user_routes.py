@@ -7,7 +7,7 @@ from src.controllers.user_controller import UserController
 from src.database.settings import get_db
 from src.schemas.user_schema import UserCreate, UserResponse
 
-user_router = APIRouter(prefix='/user')
+user_router = APIRouter(prefix='/user', tags=['User'])
 
 
 @user_router.get('', response_model=List[UserResponse])

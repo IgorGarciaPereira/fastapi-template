@@ -16,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 def handle_merge_routers():
     app.include_router(app_router)
     app.include_router(user_router)

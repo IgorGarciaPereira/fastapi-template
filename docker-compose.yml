@@ -2,11 +2,21 @@ version: '3.4'
 
 services:
 
+  db:
+    image: postgres
+    container_name: db_fastapi
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+
   api:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: fastapi_template
+    depends_on:
+     - db
     ports:
       - "8000:8000"
     tty: true
