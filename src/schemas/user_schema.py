@@ -8,7 +8,6 @@ class UserBase(BaseModel):
     uuid: UUID
     created_at: datetime
     updated_at: datetime | None
-    deleted_at: datetime | None
 
     class Config:
         orm_mode = True

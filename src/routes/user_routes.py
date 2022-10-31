@@ -1,12 +1,9 @@
-import datetime
-import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from src.controllers.user_controller import UserController
-from src.database.models.user_model import User
 from src.database.settings import get_db
 from src.schemas.user_schema import UserCreate, UserResponse
 
@@ -14,20 +11,20 @@ user_router = APIRouter(prefix='/user')
 
 
 @user_router.get('', response_model=List[UserResponse])
-def get_list_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_list_users(skip: int = 0, limit: int = 25, db: Session = Depends(get_db)):
     return UserController().handle_list(db, skip, limit)
 
 
-@user_router.post('')
+@user_router.post('', status_code=201)
 def post_user(user: UserCreate, db: Session = Depends(get_db)):
-    agora = datetime.datetime.now()
-    db_user = User(name=user.name, surname=user.surname, uuid=uuid.uuid4(), created_at=agora)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    return UserController().handle_create(db, user)
 
 
-@user_router.delete('/{user_uuid}')
+@user_router.delete('/{user_uuid}', status_code=204)
 def delete_user(user_uuid: str, db: Session = Depends(get_db)):
-    return UserController().handle_delete(db, user_uuid, True)
+    return UserController().handle_soft_delete(db, user_uuid, True)
+
+
+@user_router.patch('/{user_uuid}', status_code=204)
+def patch_user(user_uuid: str, data: UserCreate, db: Session = Depends(get_db)):
+    return UserController().handle_patch(db, user_uuid, data)

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 from sqlalchemy import update
 from sqlalchemy.orm import Session
@@ -27,10 +28,13 @@ class BaseCRUD(BaseInterfaceCRUD):
         return records
 
     def patch(self, db: Session, object_id: Any, data: Any, commit=True):
+        data = dict(data)
+        data['updated_at'] = datetime.now()
+
         db.execute(
             update(self.model).where(
                 self.model.uuid == object_id
-            ).values(**dict(data))
+            ).values(**data)
         )
         if commit:
             db.commit()

@@ -17,8 +17,7 @@ class User(Base):
         unique=True
     )
     created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, nullable=True)
-    deleted_at = Column(DateTime, nullable=True)
+    updated_at = Column(DateTime, nullable=True, default=None)
 
     name = Column(String)
     surname = Column(String)
