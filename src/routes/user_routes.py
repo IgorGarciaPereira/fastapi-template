@@ -27,7 +27,7 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @user_router.delete('/{user_uuid}', status_code=204)
 def delete_user(user_uuid: str, db: Session = Depends(get_db)):
-    return UserController().handle_soft_delete(db, user_uuid, True)
+    return UserController().handle_delete(db, user_uuid, True)
 
 
 @user_router.patch('/{user_uuid}', status_code=204)
