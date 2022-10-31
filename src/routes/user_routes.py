@@ -15,6 +15,11 @@ def get_list_users(skip: int = 0, limit: int = 25, db: Session = Depends(get_db)
     return UserController().handle_list(db, skip, limit)
 
 
+@user_router.get('/{user_uuid}', response_model=UserResponse)
+def get_a_user(user_uuid: str, db: Session = Depends(get_db)):
+    return UserController().handle_get(db, user_uuid)
+
+
 @user_router.post('', status_code=201)
 def post_user(user: UserCreate, db: Session = Depends(get_db)):
     return UserController().handle_create(db, user)
