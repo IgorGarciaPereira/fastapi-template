@@ -14,7 +14,7 @@ class BaseController(BaseInterfaceController):
         return self.crud_class().create(db, data, commit)
 
     def handle_get(self, db: Session, object_id: Any):
-        object_instance = self.crud_class().get(db, id=object_id)
+        object_instance = self.crud_class().get(db, uuid=object_id)
         if object_instance is None:
             raise HTTPException(
                 status_code=404,
@@ -26,7 +26,7 @@ class BaseController(BaseInterfaceController):
         return self.crud_class().list(db)
 
     def handle_delete(self, db: Session, object_id: Any, commit=True):
-        db_customer = self.crud_class().get(db, id=object_id)
+        db_customer = self.crud_class().get(db, uuid=object_id)
 
         if db_customer is None:
             raise HTTPException(
@@ -37,7 +37,7 @@ class BaseController(BaseInterfaceController):
         return self.crud_class().delete(db, object_id, commit)
 
     def handle_patch(self, db: Session, object_id: Any, data: Any, commit=True):
-        db_customer = self.crud_class().get(db, id=object_id)
+        db_customer = self.crud_class().get(db, uuid=object_id)
 
         if db_customer is None:
             raise HTTPException(

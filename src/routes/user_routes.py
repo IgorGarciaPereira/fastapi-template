@@ -25,3 +25,8 @@ def post_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+@user_router.delete('/{user_uuid}')
+def delete_user(user_uuid: str, db: Session = Depends(get_db)):
+    return UserController().handle_delete(db, user_uuid, True)
