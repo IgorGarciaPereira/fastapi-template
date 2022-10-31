@@ -1,5 +1,5 @@
 server:
-	uvicorn main:app --port=8080 --reload
+	uvicorn main:app --port=8000 --reload
 
 # Agenda
 # Data

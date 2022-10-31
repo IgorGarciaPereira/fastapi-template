@@ -1,6 +1,7 @@
-from sqlalchemy import Column, String, DateTime
-
+from datetime import datetime
 from uuid import uuid4
+
+from sqlalchemy import Column, String, DateTime
 
 from src.database.settings import Base, GUID
 
@@ -15,9 +16,9 @@ class User(Base):
         default=uuid4,
         unique=True
     )
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
-    deleted_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, nullable=True)
+    deleted_at = Column(DateTime, nullable=True)
 
     name = Column(String)
     surname = Column(String)

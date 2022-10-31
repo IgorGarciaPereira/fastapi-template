@@ -1,18 +1,20 @@
 import uuid, datetime
 
+from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from src.controllers.user_controller import UserController
 from src.database.models.user_model import User
 from src.database.settings import get_db
-from src.schemas.user_schema import UserResponse, UserCreate
+from src.schemas.user_schema import UserCreate, UserResponse
 
 user_router = APIRouter(prefix='/user')
 
 
-@user_router.get('')
+@user_router.get('', response_model=List[UserResponse])
 def get_list_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(User).offset(skip).limit(limit).all()
+    return UserController().handle_list(db, skip, limit)
 
 
 @user_router.post('')
