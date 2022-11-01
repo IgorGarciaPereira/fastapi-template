@@ -21,5 +21,12 @@ class UserCreate(BaseModel):
         orm_mode = True
 
 
+class UserCreated(BaseModel):
+    uuid: UUID
+
+    class Config:
+        orm_mode = True
+
+
 class UserResponse(UserBase, UserCreate):
     pass

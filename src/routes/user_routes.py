@@ -5,9 +5,14 @@ from sqlalchemy.orm import Session
 
 from src.controllers.user_controller import UserController
 from src.database.settings import get_db
-from src.schemas.user_schema import UserCreate, UserResponse
+from src.schemas.user_schema import UserCreate, UserResponse, UserCreated
+from src.middleware import is_authenticated
 
-user_router = APIRouter(prefix='/user', tags=['User'])
+user_router = APIRouter(
+    prefix='/user',
+    tags=['User'],
+    dependencies=[Depends(is_authenticated)]
+)
 
 
 @user_router.get('', response_model=List[UserResponse])
@@ -20,7 +25,7 @@ def get_a_user(user_uuid: str, db: Session = Depends(get_db)):
     return UserController().handle_get(db, user_uuid)
 
 
-@user_router.post('', status_code=201)
+@user_router.post('', status_code=201, response_model=UserCreated)
 def post_user(user: UserCreate, db: Session = Depends(get_db)):
     return UserController().handle_create(db, user)
 

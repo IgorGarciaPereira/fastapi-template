@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.routes.index import app_router, user_router
+from src.routes.index import app_router, user_router, auth_router
 from src.database.settings import init_database
 
 app = FastAPI()
-
 origins = ["*"]
 
 app.add_middleware(
@@ -19,6 +18,7 @@ app.add_middleware(
 
 def handle_merge_routers():
     app.include_router(app_router)
+    app.include_router(auth_router)
     app.include_router(user_router)
 
 
