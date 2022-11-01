@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from sqlalchemy import Column, String, DateTime
+from sqlalchemy.orm import relationship
 
 from src.database.settings import Base, GUID
 
@@ -19,5 +20,6 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, nullable=True, default=None)
 
-    name = Column(String)
-    surname = Column(String)
+    name = Column(String, nullable=True)
+    surname = Column(String, nullable=True)
+    auth = relationship('Auth', back_populates='user', cascade='all, delete-orphan')
