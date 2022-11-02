@@ -9,8 +9,8 @@ auth_router = APIRouter(prefix='/auth', tags=['Auth'])
 
 
 @auth_router.post('/login', response_model=Token)
-def handle_login(data: AuthCreate, db: Session = Depends(get_db)):
-    return AuthController.handle_login(db, data)
+def handle_login(data: AuthLogin, db: Session = Depends(get_db)):
+    return AuthController().handle_login(db, data)
 
 
 @auth_router.get('/check-token')
@@ -21,5 +21,5 @@ def handle_validate_token(req: Request):
 
 
 @auth_router.post('/register', status_code=201)
-def handle_register(data: AuthLogin, db: Session = Depends(get_db)):
+def handle_register(data: AuthCreate, db: Session = Depends(get_db)):
     return AuthController().handle_register(db, data)

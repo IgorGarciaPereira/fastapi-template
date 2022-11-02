@@ -29,4 +29,5 @@ class UserCreated(BaseModel):
 
 
 class UserResponse(UserBase, UserCreate):
-    pass
+    name: str | None
+    surname: str | None

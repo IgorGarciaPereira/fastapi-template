@@ -13,6 +13,15 @@ class BaseController(BaseInterfaceController):
     def handle_create(self, db: Session, data: Any, commit=True):
         return self.crud_class().create(db, data, commit)
 
+    def handle_filter(self, db: Session, default_return=True, **data: Any):
+        object_instance = self.crud_class().get(db, **data)
+        if object_instance is None and default_return:
+            raise HTTPException(
+                status_code=404,
+                detail={'message': 'resource not found'}
+            )
+        return object_instance
+
     def handle_get(self, db: Session, object_id: Any):
         object_instance = self.crud_class().get(db, uuid=object_id)
         if object_instance is None:

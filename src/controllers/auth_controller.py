@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta, datetime
+from uuid import uuid4
 
 from fastapi import HTTPException
 from jose import jwt, ExpiredSignatureError
@@ -40,7 +41,7 @@ def validate_token(token: str):
 class AuthController(BaseController):
     def __init__(self):
         super(AuthController, self).__init__(crud_class=AuthCrud)
-        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        self.pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 
     def __verify_password(self, plain_password, hashed_password):
         return self.pwd_context.verify(plain_password, hashed_password)
@@ -52,22 +53,27 @@ class AuthController(BaseController):
         hash_password = self.__get_password_hash(data.password)
         data.password = hash_password
 
-        user = UserController().handle_create(db, {}, False)
+        user_uuid = uuid4()
+        user = UserController().handle_create(db, {'uuid': user_uuid}, False)
 
         data = dict(data).copy()
-        data['user_uuid'] = user.uuid
+        data['user_uuid'] = user_uuid
 
         self.handle_create(db, data, False)
 
         if commit:
             db.commit()
-        return
+        return user
 
-    @staticmethod
-    def handle_login(cls, db: Session, data: AuthLogin):
-        # TODO: Get information from database
+    def handle_login(self, db: Session, data: AuthLogin):
+        auth = self.handle_filter(db, default_return=False, email=data.email)
+        if auth is None:
+            raise HTTPException(status_code=401, detail='User or password invalid')
+        elif not self.__verify_password(data.password, auth.password):
+            raise HTTPException(status_code=401, detail='User or password invalid')
+
         token_data = {
-            'uuid': 'adfiaf23478',
-            'user': data.email
+            'uuid': f'{auth.user_uuid}',
+            'name': auth.user.name
         }
         return create_token(token_data)
