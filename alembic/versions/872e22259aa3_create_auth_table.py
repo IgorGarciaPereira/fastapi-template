@@ -5,6 +5,8 @@ Revises: 14ef828bb610
 Create Date: 2022-11-01 15:30:01.694151
 
 """
+from datetime import datetime
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -24,7 +26,9 @@ def upgrade() -> None:
         sa.Column('email', sa.String, primary_key=True, index=True),
         sa.Column('password', sa.String, nullable=False),
         sa.Column('active', sa.Boolean, default=False),
-        sa.Column('user_uuid', GUID(), sa.ForeignKey('users.uuid'))
+        sa.Column('user_uuid', GUID(), sa.ForeignKey('users.uuid')),
+        sa.Column('created_at', sa.DateTime, default=datetime.now()),
+        sa.Column('updated_at', sa.DateTime, nullable=True, default=None),
     )
 
 

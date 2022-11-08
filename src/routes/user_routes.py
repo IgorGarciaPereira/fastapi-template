@@ -5,13 +5,16 @@ from sqlalchemy.orm import Session
 
 from src.controllers.user_controller import UserController
 from src.database.settings import get_db
-from src.schemas.user_schema import UserCreate, UserResponse, UserCreated
-from src.middleware import is_authenticated
+from src.schemas.user_schema import UserCreate, UserResponse, UserCreated, UserUpdate
+from src.middleware import is_authenticated, IsAuthorized
+
+
+is_authorized = IsAuthorized(entity='users')
 
 user_router = APIRouter(
     prefix='/user',
     tags=['User'],
-    dependencies=[Depends(is_authenticated)]
+    dependencies=[Depends(is_authenticated), Depends(is_authorized)]
 )
 
 
@@ -36,5 +39,5 @@ def delete_user(user_uuid: str, db: Session = Depends(get_db)):
 
 
 @user_router.patch('/{user_uuid}', status_code=204)
-def patch_user(user_uuid: str, data: UserCreate, db: Session = Depends(get_db)):
+def patch_user(user_uuid: str, data: UserUpdate, db: Session = Depends(get_db)):
     return UserController().handle_patch(db, user_uuid, data)

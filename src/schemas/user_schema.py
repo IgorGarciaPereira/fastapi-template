@@ -16,6 +16,16 @@ class UserBase(BaseModel):
 class UserCreate(BaseModel):
     name: str
     surname: str
+    role_uuid: str | None
+
+    class Config:
+        orm_mode = True
+
+
+class UserUpdate(BaseModel):
+    name: str | None
+    surname: str | None
+    role_uuid: str | None
 
     class Config:
         orm_mode = True
@@ -31,3 +41,4 @@ class UserCreated(BaseModel):
 class UserResponse(UserBase, UserCreate):
     name: str | None
     surname: str | None
+    role_uuid: UUID | None

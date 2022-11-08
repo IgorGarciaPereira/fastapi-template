@@ -1,14 +1,17 @@
+import os
 from datetime import datetime
-from typing import Any
+from typing import Any, List
 from sqlalchemy import update
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.decl_api import declarative_base
 
 from src.interfaces.base_crud_interface import BaseInterfaceCRUD
+limit_default = int(os.getenv('LIMIT_LIST', 25))
 
 
 class BaseCRUD(BaseInterfaceCRUD):
 
-    def __init__(self, model: Any):
+    def __init__(self, model: declarative_base):
         self.model = model
 
     def create(self, db: Session, data: Any, commit=True):
@@ -23,8 +26,8 @@ class BaseCRUD(BaseInterfaceCRUD):
         db_customer = db.query(self.model).filter_by(**data).first()
         return db_customer
 
-    def list(self, db: Session, skip: int = 0, limit: int = 25):
-        records = db.query(self.model).offset(skip).limit(limit).all()
+    def list(self, db: Session, skip: int = 0, limit: int = limit_default, **filter_data) -> List[Any]:
+        records = db.query(self.model).filter_by(**filter_data).offset(skip).limit(limit).all()
         return records
 
     def patch(self, db: Session, object_id: Any, data: Any, commit=True):

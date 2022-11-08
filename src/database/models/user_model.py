@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from src.database.settings import Base, GUID
@@ -23,3 +23,4 @@ class User(Base):
     name = Column(String, nullable=True)
     surname = Column(String, nullable=True)
     auth = relationship('Auth', back_populates='user', cascade='all, delete-orphan')
+    role_uuid = Column(GUID(), ForeignKey('roles.uuid'), nullable=True)

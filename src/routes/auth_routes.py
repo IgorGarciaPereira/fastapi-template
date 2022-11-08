@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Request, Depends
 from sqlalchemy.orm import Session
 
@@ -23,3 +25,8 @@ def handle_validate_token(req: Request):
 @auth_router.post('/register', status_code=201)
 def handle_register(data: AuthCreate, db: Session = Depends(get_db)):
     return AuthController().handle_register(db, data)
+
+
+@auth_router.patch('/active/{user_uuid}')
+def handle_active_user(user_uuid: UUID, db: Session = Depends(get_db)):
+    return AuthController().handle_activate_user(db, user_uuid)

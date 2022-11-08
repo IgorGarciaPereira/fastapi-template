@@ -17,12 +17,12 @@ class Role(Base):
     )
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, nullable=True, default=None)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     deletable = Column(Boolean, default=True)
 
 
-class Permission(Base):
-    __tablename__ = 'permissions'
+class Entity(Base):
+    __tablename__ = 'entities'
 
     uuid = Column(
         GUID(),
@@ -33,17 +33,17 @@ class Permission(Base):
     )
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, nullable=True, default=None)
-    name = Column(String, nullable=True)
+    name = Column(String, nullable=False, unique=True)
 
 
 # Association Table
-class RolePermissions(Base):
-    __tablename__ = 'role_permissions'
+class RoleEntity(Base):
+    __tablename__ = 'role_entity'
 
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, nullable=True, default=None)
 
-    permission_uuid = Column(GUID(), ForeignKey('permissions.uuid'), nullable=False, primary_key=True, index=True)
+    entity_uuid = Column(GUID(), ForeignKey('entities.uuid'), nullable=False, primary_key=True, index=True)
     role_uuid = Column(GUID(), ForeignKey('roles.uuid'), nullable=False, primary_key=True, index=True)
 
     can_read = Column(Boolean, default=True)

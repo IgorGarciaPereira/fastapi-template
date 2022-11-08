@@ -1,8 +1,11 @@
+import os
+
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from typing import Any
 
 from src.interfaces.base_controller_interface import BaseInterfaceController
+limit_default = int(os.getenv('LIMIT_LIST', 25))
 
 
 class BaseController(BaseInterfaceController):
@@ -31,8 +34,8 @@ class BaseController(BaseInterfaceController):
             )
         return object_instance
 
-    def handle_list(self, db: Session, skip: int = 0, limit: int = 100):
-        return self.crud_class().list(db)
+    def handle_list(self, db: Session, skip: int = 0, limit: int = limit_default, **filter_data):
+        return self.crud_class().list(db, skip, limit, **filter_data)
 
     def handle_delete(self, db: Session, object_id: Any, commit=True):
         db_customer = self.crud_class().get(db, uuid=object_id)
@@ -54,4 +57,10 @@ class BaseController(BaseInterfaceController):
                 detail={'message': 'resource not found'}
             )
 
-        return self.crud_class().patch(db, object_id, data, commit)
+        data_dict = dict(data.__dict__)
+        data_filtered = {}
+        for item in data_dict.keys():
+            if data_dict[item] is not None:
+                data_filtered[item] = data_dict[item]
+
+        return self.crud_class().patch(db, object_id, data_filtered, commit)
