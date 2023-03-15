@@ -5,6 +5,16 @@ Change to [portuguese version](./documentation/readme_pt.md)
 ## Setting up
 Create a copy from `.env.template` to a `.env` file and update your values.
 
+## Running on MacOS (M1)
+
+Type:
+
+  `export DOCKER_DEFAULT_PLATFORM=linux/amd64`
+
+and type:
+
+  `docker-compose up --build -d`
+
 ## Next steps
 
 * Authorization system

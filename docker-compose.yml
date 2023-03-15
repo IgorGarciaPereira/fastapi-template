@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.8'
 
 services:
 
@@ -9,15 +9,25 @@ services:
       - "5432:5432"
     env_file:
       - .env
+    networks:
+      - fastapi_network
 
   api:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: fastapi_template
+    environment:
+      - DB_HOST=db
     depends_on:
      - db
     ports:
       - "8000:8000"
+    restart: on-failure
     tty: true
+    networks:
+      - fastapi_network
+
+networks:
+  fastapi_network:
 
