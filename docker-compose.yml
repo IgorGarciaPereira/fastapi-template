@@ -4,7 +4,7 @@ services:
 
   db:
     image: postgres
-    container_name: db_fastapi
+    container_name: '{APP_NAME}_db'
     ports:
       - "5432:5432"
     env_file:
@@ -16,7 +16,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi_template
+    container_name: '{APP_NAME}_api'
     environment:
       - DB_HOST=db
     depends_on:
